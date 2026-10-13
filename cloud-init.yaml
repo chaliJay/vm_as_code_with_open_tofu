@@ -1,8 +1,22 @@
 #cloud-config
+
 package_update: true
 packages:
   - apache2
+  - git
+
+write_files:
+  - path: /var/www/html/status.txt
+    owner: root:root
+    permissions: '0644'
+    content: |
+      ${student_name}
+      ${page_message}
+
 runcmd:
-  - echo "<h1>Hello, my name is ${student_name}</h1><p>${page_message}</p>" > /var/www/html/index.html
+  - rm -rf /tmp/week7-site
+  - git clone --depth 1 https://github.com/chaliJay/vm_as_code_with_open_tofu.git /tmp/week7-site
+  - rm -f /var/www/html/index.html
+  - cp -r /tmp/week7-site/index.html /tmp/week7-site/images /var/www/html/
   - systemctl enable apache2
   - systemctl restart apache2
