@@ -112,7 +112,8 @@
     <p>After changing the page message, tofu plan showed that 1 to add, 0 to change, 1 to destroy. tofu apply replaced the VM. The updated page message appeared at the original floating IP</p>
     <img src="images/exp1.png" alt="tofy plan">
     <img src="images/exp1_1.png" alt="tofu apply">
-    <img src="images/exp1_2.png" alt="page message">
+    <img src="images/exp1_2.png" alt="tofu apply">
+    <img src="images/exp1_3.png" alt="page message">
 
     <p><strong>Explanation</strong></p>
     <p>cloud-init only runs once, during a VM's first boot. There is no mechanism to make OpenStack "re-run" it on a live instance, so the only way to apply new user_data is to destroy and recreate the VM.</p>
@@ -133,8 +134,16 @@
 
     <h3>Experiment 2 — Configuration drift</h3>
     <p><strong>Prediction</strong></p>
+    <p>Deleting the HTTP rule in the web console will break the page immediately, since port 80 is how the floating IP is reached.</p>
+    <p>tofu plan will notice the rule is missing and propose to re-create it, because this rule is a resource OpenTofu created and is tracked in its state file.</p>
+    
     <p><strong>Result</strong></p>
+    <p>Opened the diary page in a private browser window: ERR_CONNECTION_TIMED_OUT. Port 80 is now blocked at the firewall, so the page cannot load even though the VM and Apache are both still running fine.</p>
+    <p>tofu plan: openstack_networking_secgroup_rule_v2.http will be created, Plan: 1 to add, 0 to change, 0 to destroy. Matches the prediction — OpenTofu detected the drift straight away.</p>
+    <p>tofu apply: Apply complete! Resources: 1 added, 0 changed, 0 destroyed. The HTTP rule exists again with a brand-new rule ID.</p>
+    
     <p><strong>Explanation</strong></p>
+    <p>OpenTofu's state file records every resource it created, including this exact security group rule, by ID. When tofu plan refreshes state against the real infrastructure and finds that ID no longer exists in OpenStack, it treats this the same as any other missing resource: something declared in code is absent from reality, so it proposes to create it again.</p>
 
     <h3>Problems and solutions</h3>
     <p>One problem I encountered was an error in the variable file related to the IP address in CIDR format. The configuration expected the IP address to be provided in the correct CIDR notation, but the default value caused an issue. I solved this by removing the default value from the variable definition and providing the appropriate value in the variable file. This resolved the configuration error and allowed me to continue working with OpenTofu.</p>
