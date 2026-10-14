@@ -141,7 +141,12 @@
     <p>Opened the diary page in a private browser window: ERR_CONNECTION_TIMED_OUT. Port 80 is now blocked at the firewall, so the page cannot load even though the VM and Apache are both still running fine.</p>
     <p>tofu plan: openstack_networking_secgroup_rule_v2.http will be created, Plan: 1 to add, 0 to change, 0 to destroy. Matches the prediction — OpenTofu detected the drift straight away.</p>
     <p>tofu apply: Apply complete! Resources: 1 added, 0 changed, 0 destroyed. The HTTP rule exists again with a brand-new rule ID.</p>
-    
+    <img src="images/exp2_1.png" alt="delete rule">
+    <img src="images/exp2_2.png" alt="webpage">
+    <img src="images/exp2_3.png" alt="tofu plan">
+    <img src="images/exp2_4.png" alt="tofu apply">
+    <img src="images/exp2_5.png" alt="live webpage">
+
     <p><strong>Explanation</strong></p>
     <p>OpenTofu's state file records every resource it created, including this exact security group rule, by ID. When tofu plan refreshes state against the real infrastructure and finds that ID no longer exists in OpenStack, it treats this the same as any other missing resource: something declared in code is absent from reality, so it proposes to create it again.</p>
 
