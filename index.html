@@ -120,8 +120,16 @@
 
     <h3>Option B - Allow HTTPS too</h3>
     <p><strong>Prediction</strong></p>
+    <p> I expected OpenTofu to add one new security group rule for HTTPS, with no resources changed or destroyed. I also expected the virtual machine to remain unaffected.</p>
+    
     <p><strong>Result</strong></p>
+    <p>Added a new openstack_networking_secgroup_rule_v2.https resource opening TCP 443 from anywhere.</p>
+    <img src="images/exp1_optionb_1.png" alt="tofy plan">
+    <img src="images/exp1_optionb_2.png" alt="tofu apply">
+
     <p><strong>Explanation</strong></p>
+    <p>How this differs from Option A: Option A changed user_data, which forced a full VM replace. Option B only added a security group rule — a firewall-level change enforced by the network layer, completely independent of the instance's boot configuration, so OpenStack applied it instantly without touching the VM.</p>
+    <p>Does the page work over HTTPS? No. Opening port 443 at the firewall only means traffic on that port is no longer blocked — it does not mean anything is listening on it. Apache was only configured by cloud-init to listen on port 80, with no TLS virtual host and no certificate, so the connection fails at the TCP level before ever reaching an application.</p>
 
     <h3>Experiment 2 — Configuration drift</h3>
     <p><strong>Prediction</strong></p>
