@@ -106,9 +106,11 @@
     <p>Before this experiment, cloud-init.yaml was extended to also write a small separate /var/www/html/status.txt file from student_name/page_message, independent of the learning diary page itself — this keeps those two variables meaningful to test without touching the learning diary content.</p>
     <p>The VM will be destroyed and re-created, not updated in place, because page_message is baked into user_data via templatefile(), and changing user_data is something OpenStack cannot apply to a running instance.</p>
     <p>The public IP will not change, since the floating IP is a separate resource attached to the port, not to the instance directly.</p>
+    <p>Updated message in terraform</p>
+    
     
     <h2>Option B - Allow HTTPS too</h2>
-    
+
     <h3>Experiment 2 — Configuration drift</h3>
 
     <h3>Problems and solutions</h3>
