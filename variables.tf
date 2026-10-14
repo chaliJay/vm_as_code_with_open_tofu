@@ -37,5 +37,5 @@ variable "student_name" {
 variable "page_message" {
   description = "Message for the web page"
   type        = string
-  default     = "This is the updated version trough Experiment 1."
+  default     = "This is the updated version through Experiment 1."
 }

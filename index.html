@@ -96,6 +96,29 @@
     <img src="images/tofu_apply_2.png" alt="tofu apply">
     <img src="images/initial_page.png" alt="webpage">
 
+    <hr>
+    <p>Verifying instance in cPouta</p>
+    <img src="images/web_instance.png" alt="web instance">
+
+    <h3>Experiment 1 — Change</h3>
+    <h2>Option A - Change the page text</h2>
+    <p>Prediction</p>
+    <p>Before this experiment, cloud-init.yaml was extended to also write a small separate /var/www/html/status.txt file from student_name/page_message, independent of the learning diary page itself — this keeps those two variables meaningful to test without touching the learning diary content.</p>
+    <p>The VM will be destroyed and re-created, not updated in place, because page_message is baked into user_data via templatefile(), and changing user_data is something OpenStack cannot apply to a running instance.</p>
+    <p>The public IP will not change, since the floating IP is a separate resource attached to the port, not to the instance directly.</p>
+    
+    <h2>Option B - Allow HTTPS too</h2>
+    
+    <h3>Experiment 2 — Configuration drift</h3>
+
+    <h3>Problems and solutions</h3>
+    <p>One problem I encountered was an error in the variable file related to the IP address in CIDR format. The configuration expected the IP address to be provided in the correct CIDR notation, but the default value caused an issue. I solved this by removing the default value from the variable definition and providing the appropriate value in the variable file. This resolved the configuration error and allowed me to continue working with OpenTofu.</p>
+    <p>Another problem occurred when running OpenTofu because the configuration changes required the virtual machine to be replaced rather than updated in place. This meant that the existing virtual machine could be destroyed and recreated. I reviewed the tofu plan output to understand why the replacement was necessary and then confirmed the result after applying the changes. This helped me understand how changes to certain resource attributes can trigger replacement instead of an in-place update.</p>
+
+    <h3>Reflection on Week 1 and Week 7</h3>
+    <p>Compared with the manual setup in Week 1, Infrastructure as Code (IaC) makes managing cloud infrastructure more efficient and reliable. In the manual approach, creating and configuring a server required dozens of clicks in the web interface. This was time-consuming and increased the risk of overlooking important settings, such as security rules. With IaC, writing and troubleshooting the code takes some time initially, but subsequent deployments can be completed much faster, often in seconds.</p>
+    <p>Another major advantage of IaC is repeatability. Manual configuration makes it difficult to ensure that multiple servers have exactly the same settings, which increases the likelihood of human error. With OpenTofu, the same configuration can be applied repeatedly to create consistent infrastructure across different environments. IaC also improves security because firewall rules and other configurations are explicitly defined in code. For example, SSH access can be restricted to a specific IP address instead of allowing connections from anywhere. Using Git to track configuration changes also provides an audit trail, making it easier to review and manage modifications.</p>
+    <p>Overall, manual setup is useful for quick tests, temporary environments, and validating prototypes. However, Infrastructure as Code is more suitable for larger projects, production environments, and situations where infrastructure needs to be reproduced reliably. It also supports the creation of consistent development, testing, and production environments and makes disaster recovery easier by allowing infrastructure to be recreated from code.</p>
 
 </body>
 </html>
