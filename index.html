@@ -14,12 +14,23 @@
     <p>Idempotency and Its Importance</p>
     <p>Idempotency refers to the property of an operation whereby executing it multiple times results in the same final state as executing it once. In the context of infrastructure automation, an idempotent process ensures that repeated runs do not create duplicate resources, corrupt configurations, or trigger unnecessary changes. Declarative systems typically enforce idempotency by comparing the desired state with the actual state and applying only the modifications required to achieve alignment.</p>
     <p>Idempotency is essential for reliable Infrastructure as Code practices. It enables safe re‑execution of automation during development, deployment, and recovery scenarios. It also supports drift correction, allowing systems to automatically reconcile unintended manual changes. Furthermore, idempotency ensures consistent outcomes across environments, facilitates reproducible deployments, and enhances the stability of CI/CD pipelines by making automation predictable and resilient to partial failures.</p>
-    
+    <p>References</p>
+    <ul>
+        <li><a href="https://opsmill.com/blog/declarative-vs-imperative-automation/">https://opsmill.com/blog/declarative-vs-imperative-automation/ </a></li>
+        <li><a href="https://sailor.sh/blog/terraform-infrastructure-as-code-concepts-declarative-imperative/">https://sailor.sh/blog/terraform-infrastructure-as-code-concepts-declarative-imperative/</a></li>
+        <li><a href="https://www.automq.com/blog/infrastructure-as-code-iac-vs-traditional-infrastructure-management">https://www.automq.com/blog/infrastructure-as-code-iac-vs-traditional-infrastructure-management</a></li>
+    </ul> 
+
     <h3>Question 2: What is configuration drift, how does it happen, and how does an IaC tool detect it?</h3>
     <p>Configuration drift refers to the situation where the actual state of an infrastructure environment gradually diverges from the state defined in its Infrastructure as Code (IaC) configuration. Drift occurs when changes are made directly to the infrastructure—either intentionally or accidentally—without updating the IaC source of truth. As a result, the deployed environment no longer matches the version‑controlled configuration, leading to inconsistencies, unexpected behavior, and difficulties in maintenance or troubleshooting.</p>
     <p>Configuration drift typically happens through several mechanisms. The most common cause is manual changes performed through cloud dashboards or command‑line tools, such as modifying security group rules, resizing instances, or adjusting network settings. Drift may also arise from automated processes outside the IaC workflow, including auto‑scaling events, system patches, or external scripts that alter resources. Additionally, environment‑specific changes, such as emergency fixes applied directly in production, can introduce differences that are never reflected back into the IaC repository.</p>
     <p>IaC tools detect configuration drift by comparing the desired state defined in code with the actual state retrieved from the infrastructure provider. Declarative IaC systems such as Terraform maintain a state file that represents the last known configuration. When a user runs commands like terraform plan, the tool queries the cloud provider’s API to obtain the current resource configuration and evaluates any differences between the real environment and the declared configuration. Any mismatches—such as missing resources, altered parameters, or unexpected modifications—are reported as drift. This detection mechanism allows IaC tools to highlight inconsistencies and, when appropriate, reconcile the environment back to the desired state through a controlled and predictable update process.</p>
-    
+    <p>References : </p>
+    <ul>
+        <li><a href="https://www.ibm.com/think/topics/configuration-drift">https://www.ibm.com/think/topics/configuration-drift</a></li>
+        <li><a href="https://snyk.io/articles/infrastructure-as-code-iac/detect-prevent-configuration-drift/">https://snyk.io/articles/infrastructure-as-code-iac/detect-prevent-configuration-drift/</a></li>
+    </ul>
+
     <h3>Question 3: Explain the difference between provisioning and configuration management. Where do cloud-init and Ansible fit in?</h3>
     <p>Provisioning vs. Configuration Management</p>
     <p>Provisioning refers to the process of creating and preparing the underlying infrastructure resources required for an environment. This includes tasks such as allocating virtual machines, creating networks and subnets, assigning IP addresses, configuring storage volumes, and setting up security groups. Provisioning tools interact directly with cloud provider APIs to ensure that the necessary infrastructure components exist and are correctly defined. The focus is on building the infrastructure itself, not on what runs inside it.</p>
@@ -27,8 +38,16 @@
     <p>Where Cloud‑Init and Ansible Fit In</p>
     <p>Cloud‑init is primarily a provisioning‑time initialization tool. It runs automatically when a cloud instance boots for the first time and performs early‑stage setup tasks such as creating users, injecting SSH keys, installing initial packages, and writing basic configuration files. Cloud‑init is executed only during instance initialization and is not intended for ongoing configuration management. It is best suited for lightweight, one‑time bootstrapping of newly provisioned virtual machines.</p>
     <p>Ansible, on the other hand, is a configuration management tool. It is designed to apply and maintain system configurations repeatedly and reliably. Ansible can install software, manage services, enforce file contents, apply security policies, and update systems over time. Unlike cloud‑init, Ansible can be run at any point in the lifecycle of a server and supports idempotent operations, ensuring that repeated executions converge to the same desired state.</p>
-  
+    <p>References : </p>
+    <ul>
+        <li><a href="https://www.gruntwork.io/blog/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation">https://www.gruntwork.io/blog/why-we-use-terraform-and-not-chef-puppet-ansible-saltstack-or-cloudformation</a></li>
+        <li> <a href="https://devopscube.com/infrastructure-as-code-configuration-management/">https://devopscube.com/infrastructure-as-code-configuration-management/</a></li>
+    </ul>
+
     <h3>Question 4: What is the state file used for? Why should it not be committed to a Git repository, and how do teams usually share it instead?</h3>
     <p>The state file in Infrastructure as Code (IaC) systems, such as Terraform, serves as a critical internal database that records the current known state of all managed infrastructure resources. It stores detailed metadata—including resource identifiers, dependencies, attributes, and relationships—that allows the IaC tool to understand how the declared configuration in code corresponds to the actual deployed environment. This enables accurate change planning, efficient updates, and reliable detection of configuration drift. Because the state file contains sensitive information, such as cloud resource IDs, IP addresses, and sometimes embedded secrets, and because it changes frequently as infrastructure evolves, it must not be committed to a Git repository. Storing it in version control would expose confidential data, create merge conflicts, and lead to inconsistent or corrupted states across environments. Instead, teams share and maintain the state file using a remote backend, typically a secure cloud storage service such as AWS S3, Azure Blob Storage, or Google Cloud Storage, often combined with a locking mechanism to prevent concurrent writes. Platforms like Terraform Cloud or Terraform Enterprise also provide centralized, encrypted, and versioned state management. These approaches ensure that all team members and CI/CD pipelines operate against a single, authoritative state, maintaining consistency, security, and reliability across the entire infrastructure lifecycle.</p>
-</body>
+
+    <h2>Part B</h2>
+
+    </body>
 </html>
