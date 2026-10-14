@@ -49,5 +49,53 @@
 
     <h2>Part B</h2>
 
-    </body>
+    <h3>Overview</h3>
+    <p>This project involved deploying a web server on CSC cPouta using OpenTofu. I managed the infrastructure through the PowerShell terminal in Visual Studio Code. The cloud environment is built on OpenStack, and the server setup was automated with cloud-init during startup. The virtual machine was connected to the existing CSC network, without requiring manual software installation via SSH.</p>
+    
+    <h3>Files and their purpose</h3>
+    <p>
+    The project lives entirely in six files plus the usual Git housekeeping. <code>versions.tf</code> and
+    <code>main.tf</code> were given by the assignment; <code>variables.tf</code>, <code>cloud-init.yaml</code>,
+    <code>outputs.tf</code>, and the <code>terraform.tfvars</code> pair were written to meet the stated
+    requirements.
+  </p>
+    <ul>
+        <li>main.tf — declares the seven OpenStack resources and their relationships.</li>
+        <li>versions.tf — selects the OpenStack provider and its requirements.</li>
+        <li>variables.tf — declares configurable names, image/flavor, network, SSH key path, permitted SSH CIDR and webpage text; check the submitted file for its validation rule.</li>
+        <li>outputs.tf — displays public_ip and website_url after deployment.</li>
+        <li>cloud-init.yaml — boot-time configuration template for the web server and webpage content.</li>
+        <li>.terraform.lock.hcl — records selected provider versions for consistent initialization.</li>
+        <li>.gitignore — prevents state, credentials, private keys and local/generated files from being committed.</li>
+    </ul>
+
+    <h3>Explanation of main.tf file</h3>
+    <ul>
+        <li>data.openstack_networking_network_v2.project reads the existing project network; it does not create a new network.</li>
+        <li>openstack_compute_keypair_v2.web registers my SSH public key with cPouta; my private key stays local.</li>
+        <li>openstack_networking_secgroup_v2.web creates the firewall/security group.</li>
+        <li>openstack_networking_secgroup_rule_v2.ssh permits TCP port 22 only from the configured SSH CIDR.</li>
+        <li>openstack_networking_secgroup_rule_v2.http permits TCP port 80 from 0.0.0.0/0 for the public webpage.</li>
+        <li>openstack_networking_port_v2.web creates a network port and associates the security group with it.</li>
+        <li>openstack_compute_instance_v2.web creates the Linux VM, connects it to the port, uses the registered keypair and passes the rendered cloud-init template as user_data.</li>
+        <li>openstack_networking_floatingip_v2.web allocates a public IP from the public pool and associates it with the port.</li>
+    </ul>
+
+    <h3>Install OpenTofu</h3>
+    <p>Installed with <code>winget install --exact --id=OpenTofu.Tofu</code></p>
+    <img src="images/tofu_installation.png" alt="tofu installation">
+
+    <h3>Deployment and Verification</h3>
+    <p>prediction : counting the resource blocks in main.tf (key pair, security group, two rules, port, VM, floating IP) gives 7. The data block for the project network is a lookup, not a creation, so I expected 7 to add, 0 to change, 0 to destroy.</p>
+    <p>Result : tofu plan proposed 7 to add. tofu apply completed with “Resources: 7 added, 0 changed, 0 destroyed.” The initial public IP was 86.50.23.204 and the webpage displayed my name in the page heading. The browser confirmed the page was served over HTTP.</p>
+    <p>Explanation: OpenTofu provisioned the infrastructure and cloud-init configured the web server automatically at first boot.</p>
+
+    <img src="images/tofu_plan_1.png" alt="tofu plan">
+    <img src="images/tofu_plan_2.png" alt="tofu plan">
+    <img src="images/tofu_apply_1.png" alt="tofu apply">
+    <img src="images/tofu_apply_2.png" alt="tofu apply">
+    <img src="images/initial_page.png" alt="webpage">
+
+
+</body>
 </html>
